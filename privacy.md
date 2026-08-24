@@ -117,6 +117,6 @@
 - Tomsworkers Inc.
 - 개인정보 보호책임자: 김종환
 - 이메일: [tom@tomsworkers.io](mailto:tom@tomsworkers.io)
-- 인스타그램: [@mybaseballstar](https://instagram.com/mybaseballstar)
+- 인스타그램: [@mybaseballstar](https://www.instagram.com/mybaseballstar/)
 
 서비스 이용 조건은 [이용약관](terms)을 따릅니다.

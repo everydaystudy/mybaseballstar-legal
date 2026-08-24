@@ -15,4 +15,4 @@ KBO 앱입니다.
 
 - Tomsworkers Inc.
 - 이메일: [tom@tomsworkers.io](mailto:tom@tomsworkers.io)
-- 인스타그램: [@mybaseballstar](https://instagram.com/mybaseballstar)
+- 인스타그램: [@mybaseballstar](https://www.instagram.com/mybaseballstar/)

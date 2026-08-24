@@ -87,6 +87,6 @@
 
 - Tomsworkers Inc.
 - 이메일: [tom@tomsworkers.io](mailto:tom@tomsworkers.io)
-- 인스타그램: [@mybaseballstar](https://instagram.com/mybaseballstar)
+- 인스타그램: [@mybaseballstar](https://www.instagram.com/mybaseballstar/)
 
 개인정보 처리에 관한 사항은 [개인정보 처리방침](privacy)을 따릅니다.
