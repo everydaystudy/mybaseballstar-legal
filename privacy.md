@@ -122,7 +122,7 @@
 내용은 지체 없이 처리하고 결과를 알려드립니다.
 
 - Tomsworkers Inc.
-- 개인정보 보호책임자: 김종환
+- 개인정보 보호 담당: 개인정보 보호 담당자
 - 이메일: [tom@tomsworkers.io](mailto:tom@tomsworkers.io)
 - 인스타그램: [@mybaseballstar](https://www.instagram.com/mybaseballstar/)
 
