@@ -2,7 +2,9 @@
 
 **mybaseballstar**(이하 "앱") 이용에 관한 조건입니다.
 
-시행일: 2026-00-00
+시행자: Tom's Workers
+
+시행일: 2026-09-01
 
 ---
 
@@ -79,4 +81,5 @@
 
 ## 11. 문의
 
-인스타그램 [@mybaseballstar](https://instagram.com/mybaseballstar)
+- 시행자: Tom's Workers
+- 인스타그램: [@mybaseballstar](https://instagram.com/mybaseballstar)

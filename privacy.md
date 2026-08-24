@@ -4,7 +4,9 @@
 이 문서는 앱이 **실제로 무엇을 저장하고 무엇을 저장하지 않는지**를 그대로
 적은 것입니다.
 
-시행일: 2026-00-00
+시행자: Tom's Workers
+
+시행일: 2026-09-01
 
 ---
 
@@ -98,4 +100,7 @@
 
 ## 10. 문의
 
-인스타그램 [@mybaseballstar](https://instagram.com/mybaseballstar)
+개인정보 처리에 관한 문의는 아래로 받습니다.
+
+- 시행자: Tom's Workers
+- 인스타그램: [@mybaseballstar](https://instagram.com/mybaseballstar)
