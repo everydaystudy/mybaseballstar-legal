@@ -1,4 +1,8 @@
 title: mybaseballstar
 description: 팀이 아니라 선수를 봅니다 — KBO 선수 알림 앱
-theme: jekyll-theme-minimal
 lang: ko-KR
+
+# ⚠️ 테마를 쓰지 않는다. jekyll-theme-minimal 이 머리말·꼬리말에
+# GitHub 계정명(everydaystudy)을 넣는데, 본문은 시행자를
+# Tomsworkers Inc. 라고 한다. 약관에서 그 둘이 어긋나면 안 된다.
+# 레이아웃은 _layouts/default.html 하나뿐이다.

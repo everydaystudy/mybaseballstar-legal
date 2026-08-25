@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'ko-KR' }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+<style>
+  /* 앱에서 링크로 여는 법적 문서다. 읽는 것 말고 할 일이 없으므로
+     장식을 두지 않는다.
+
+     ⚠️ 기본 테마(jekyll-theme-minimal)를 걷어낸 이유는 취향이 아니다.
+     테마가 머리말에 [View the Project on GitHub everydaystudy/...],
+     꼬리말에 [This project is maintained by everydaystudy] 를 넣는데,
+     본문은 시행자를 Tomsworkers Inc. 라고 한다. 약관에서 그 둘이
+     어긋나면 안 된다. */
+  :root { color-scheme: light dark; }
+  body {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+    font: 16px/1.75 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+          "Malgun Gothic", "Noto Sans KR", sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    word-break: keep-all;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e8e8e8; background: #141414; }
+    a { color: #7bb0ff; }
+    hr { border-color: #333; }
+    code { background: #262626; }
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 1.5rem; letter-spacing: -0.02em; }
+  h2 { font-size: 1.15rem; margin: 2.5rem 0 0.75rem; letter-spacing: -0.01em; }
+  h3 { font-size: 1rem; margin: 1.75rem 0 0.5rem; }
+  p, li { font-size: 0.98rem; }
+  ul { padding-left: 1.2rem; }
+  li { margin: 0.3rem 0; }
+  hr { border: 0; border-top: 1px solid #e5e5e5; margin: 2rem 0; }
+  a { color: #0b57d0; }
+  code {
+    background: #f2f2f2; padding: 0.1em 0.35em;
+    border-radius: 4px; font-size: 0.9em;
+  }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td {
+    border: 1px solid #e5e5e5; padding: 0.5rem 0.7rem;
+    text-align: left; font-size: 0.92rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    th, td { border-color: #333; }
+  }
+</style>
+</head>
+<body>
+{{ content }}
+</body>
+</html>
