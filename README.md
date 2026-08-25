@@ -3,8 +3,8 @@
 앱에서 여는 이용약관과 개인정보 처리방침의 **원본**입니다.
 GitHub Pages 로 게시됩니다.
 
-- https://everydaystudy.github.io/mybaseballstar-legal/terms
-- https://everydaystudy.github.io/mybaseballstar-legal/privacy
+- https://mybaseballstar.tomsworkers.io/terms
+- https://mybaseballstar.tomsworkers.io/privacy
 
 앱 저장소(`everydaystudy/mabas-app`)는 비공개라 Pages 를 쓸 수 없어서
 문서만 여기로 분리했습니다. **양쪽에 두면 갱신할 때 어긋나므로 원본은
@@ -32,3 +32,12 @@ GitHub Pages 로 게시됩니다.
 광고 식별자·분석 SDK 는 쓰지 않으므로 그 항목들은 해당 없음이다.
 
 개인정보처리방침 URL 과 이용약관(EULA) URL 은 **별개 항목**으로 각각 제출한다.
+
+## 주소
+
+`CNAME` 파일이 커스텀 도메인을 정한다. DNS 는 GoDaddy 에 있고
+`mybaseballstar` CNAME 이 `everydaystudy.github.io` 를 가리킨다.
+
+⚠️ **이 주소는 App Store 에 제출하고 앱에 상수로 박혀 있다**
+(`lib/screens/settings_screen.dart` 의 `_legalBase`). 바꾸려면 양쪽을
+같이 고쳐야 하고, 이미 배포된 앱은 옛 주소를 계속 부른다.
