@@ -2,7 +2,12 @@ title: mybaseballstar
 description: 팀이 아니라 선수를 봅니다 — KBO 선수 알림 앱
 lang: ko-KR
 
-# ⚠️ 테마를 쓰지 않는다. jekyll-theme-minimal 이 머리말·꼬리말에
-# GitHub 계정명(everydaystudy)을 넣는데, 본문은 시행자를
-# Tomsworkers Inc. 라고 한다. 약관에서 그 둘이 어긋나면 안 된다.
-# 레이아웃은 _layouts/default.html 하나뿐이다.
+# ⚠️ 테마를 쓰지 않는다.
+#
+# jekyll-theme-minimal 은 머리말에 [View the Project on GitHub
+# <계정>/<저장소>], 꼬리말에 [This project is maintained by <계정>] 을
+# 넣는다. 본문은 시행자를 Tomsworkers Inc. 라고 하는데 껍데기가 다른
+# 이름을 말하면, 약관에서 그 둘이 어긋난다. 취향 문제가 아니다.
+#
+# 레이아웃은 _layouts/default.html 하나뿐이다. 이 파일은 배포되지 않으므로
+# 설명은 여기 둔다 — 레이아웃에 적으면 방문자 HTML 에 같이 실린다.
