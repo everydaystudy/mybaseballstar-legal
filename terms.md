@@ -2,7 +2,7 @@
 
 **mybaseballstar**(이하 "앱") 이용에 관한 조건입니다.
 
-시행자: Tomsworkers Inc.
+시행자: 주식회사 톰즈워커즈
 
 시행일: 2026-09-01
 
@@ -88,7 +88,7 @@
 
 ## 11. 문의
 
-- Tomsworkers Inc.
+- 주식회사 톰즈워커즈
 - 이메일: [tom@tomsworkers.io](mailto:tom@tomsworkers.io)
 - 인스타그램: [@mybaseballstar](https://www.instagram.com/mybaseballstar/)
 

@@ -6,7 +6,7 @@ lang: ko-KR
 #
 # jekyll-theme-minimal 은 머리말에 [View the Project on GitHub
 # <계정>/<저장소>], 꼬리말에 [This project is maintained by <계정>] 을
-# 넣는다. 본문은 시행자를 Tomsworkers Inc. 라고 하는데 껍데기가 다른
+# 넣는다. 본문은 시행자를 주식회사 톰즈워커즈 라고 하는데 껍데기가 다른
 # 이름을 말하면, 약관에서 그 둘이 어긋난다. 취향 문제가 아니다.
 #
 # 레이아웃은 _layouts/default.html 하나뿐이다. 이 파일은 배포되지 않으므로
