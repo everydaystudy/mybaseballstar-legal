@@ -1,0 +1,636 @@
+---
+layout: landing
+title: 마이베이스볼스타
+description: 팀이 아니라 선수를 따라갑니다. 세 명만 고르면 타석마다 알려주는 KBO · MLB 야구 앱.
+---
+<style>
+/* ─────────────────────────────────────────────────────────────
+   앱의 토큰을 그대로 쓴다. 랜딩과 앱이 다른 얼굴이면 안 된다.
+   lib/theme/mabas_colors.dart · mabas_typography.dart
+   ───────────────────────────────────────────────────────────── */
+:root{
+  /* 폰 화면 안 — 앱 라이트 팔레트. 다크에서도 이 값이 유지된다. */
+  --bg:#FFFFFF; --surface-alt:#F6F7F9; --border:#E9EBEF; --hairline:#F4F5F7;
+  --text:#15181D; --text-sub:#5C6470; --text-tertiary:#6E7683;
+  --live:#E01B2E; --live-on-tint:#C8192A; --live-tint:#FDECEE;
+  --good:#12864B; --good-tint:#E7F3ED;
+  --board:#16181C; --board-text:#E8EAEE; --board-dim:#8A919C; --board-divider:#2E333B;
+  --led-ball:#2BC96A; --led-strike:#FFC61A; --led-out:#FF3B44; --led-unlit:#3E4552;
+
+  /* 페이지 자체의 색 */
+  --page:#FFFFFF; --page-alt:#F6F7F9; --rule:#E9EBEF;
+  --ink:#15181D; --ink-2:#5C6470; --ink-3:#79818E;
+  --accent:#E01B2E; --accent-soft:#FDECEE;
+
+  --sans:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+/* ⚠️ 다크에서도 폰 안은 그대로 둔다. 앱이 라이트로 고정돼 있어서
+   (main.dart · ThemeMode.light) 어두운 폰을 보여주면 거짓말이 된다.
+   바뀌는 건 페이지 바탕뿐이다. */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0A0C10; --page-alt:#12151B; --rule:#232833;
+    --ink:#EDF0F5; --ink-2:#A6AEBC; --ink-3:#7C8593;
+    --accent:#FF5566; --accent-soft:#2A1418;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0A0C10; --page-alt:#12151B; --rule:#232833;
+  --ink:#EDF0F5; --ink-2:#A6AEBC; --ink-3:#7C8593;
+  --accent:#FF5566; --accent-soft:#2A1418;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--page);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;line-height:1.7}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ── 맨 위 줄 ─────────────────────────────────────── */
+.top{display:flex;align-items:center;gap:10px;padding:22px 0}
+.top .logo{width:26px;height:26px;flex:0 0 auto}
+.top .nm{font-size:17px;font-weight:700;letter-spacing:-.035em;white-space:nowrap}
+.top nav{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
+.top nav a{font-size:13px;color:var(--ink-2);text-decoration:none}
+.top nav a:hover{color:var(--ink)}
+.top nav a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+/* ── 첫 화면 ──────────────────────────────────────── */
+.hero{padding:56px 0 0;text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:18px}
+.eb{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(34px,6.4vw,60px);font-weight:700;letter-spacing:-.045em;
+  line-height:1.18;text-wrap:balance;max-width:16ch}
+.hero p{font-size:clamp(15px,2vw,18px);color:var(--ink-2);max-width:34ch;text-wrap:balance}
+.soon{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
+  font-size:12px;font-weight:600;padding:9px 16px;border-radius:999px;
+  background:var(--accent-soft);color:var(--accent);border:1px solid currentColor}
+.soon .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* 첫 화면의 폰 — 아래를 잘라 다음 칸으로 이어지게 한다 */
+.herophone{margin-top:14px;height:430px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(#000 78%,transparent);
+  mask-image:linear-gradient(#000 78%,transparent)}
+
+/* ── 기능 칸 ──────────────────────────────────────── */
+.band{padding:72px 0}
+.band.alt{background:var(--page-alt)}
+.band.dark{background:var(--board);color:var(--board-text)}
+.duo{display:grid;grid-template-columns:1fr;gap:40px;align-items:center;justify-items:center}
+@media(min-width:900px){
+  .duo{grid-template-columns:1fr 340px;gap:64px;justify-items:start}
+  .duo.flip{grid-template-columns:340px 1fr}
+  .duo.flip .say{order:2}
+  .duo.flip .pic{order:1}
+}
+.say{display:flex;flex-direction:column;gap:14px;max-width:34ch}
+.say h2{font-size:clamp(25px,3.4vw,34px);font-weight:700;letter-spacing:-.04em;
+  line-height:1.28;text-wrap:balance}
+.say p{font-size:15px;color:var(--ink-2)}
+.band.dark .say p{color:var(--board-dim)}
+.say ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:2px}
+.say li{font-size:14.5px;color:var(--ink-2);display:flex;gap:9px;align-items:baseline}
+.band.dark .say li{color:var(--board-dim)}
+.say li::before{content:"";width:5px;height:5px;border-radius:50%;
+  background:var(--accent);flex:0 0 auto;transform:translateY(-2px)}
+.pic{display:flex;justify-content:center}
+/* 폰 아래를 조금만 잘라 [화면이 이어진다]는 인상을 준다 */
+.crop{height:470px;overflow:hidden}
+
+/* ── 말하지 않는 것 ───────────────────────────────── */
+.honest{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:16px;overflow:hidden;margin-top:30px}
+@media(min-width:760px){.honest{grid-template-columns:repeat(3,1fr)}}
+.honest div{background:var(--page);padding:22px 20px}
+.honest dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  color:var(--ink-3);margin-bottom:9px}
+.honest dd{font-size:14.5px;color:var(--ink-2)}
+.honest dd b{color:var(--ink);font-weight:600}
+
+/* ── 맺음 ─────────────────────────────────────────── */
+.end{text-align:center;padding:86px 0 70px;display:flex;flex-direction:column;
+  align-items:center;gap:16px}
+.end h2{font-size:clamp(26px,4vw,38px);font-weight:700;letter-spacing:-.04em;
+  text-wrap:balance;max-width:18ch}
+footer{border-top:1px solid var(--rule);padding:34px 0 60px;
+  display:flex;flex-wrap:wrap;gap:18px 32px;align-items:baseline}
+footer .co{font-size:13px;color:var(--ink-2)}
+footer nav{display:flex;gap:20px;margin-left:auto;flex-wrap:wrap}
+footer a{font-size:13px;color:var(--ink-2);text-decoration:none}
+footer a:hover{color:var(--ink)}
+footer a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+@media (prefers-reduced-motion:no-preference){
+  .rise{animation:rise .6s cubic-bezier(.2,.7,.3,1) backwards}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+}
+/* 폰은 300×650 으로 그리고 통째로 줄인다 — 안쪽 치수는 앱 그대로 */
+.slot{position:relative;width:300px}
+.phone{
+  width:300px;height:650px;background:var(--bg);color:var(--text);
+  border-radius:38px;overflow:hidden;position:relative;
+  transform-origin:top center;
+  box-shadow:0 26px 60px -30px rgba(21,24,29,.45),
+              0 2px 10px -4px rgba(21,24,29,.10);
+  border:1px solid var(--border);
+  display:flex;flex-direction:column;
+}
+.phone.dark{background:#0C1016}
+
+/* ── 폰 내부 공통 ───────────────────────────────────────── */
+.status{display:flex;justify-content:space-between;align-items:center;
+  padding:13px 20px 4px;font-family:var(--mono);font-size:11px;color:var(--text);font-weight:600}
+.status .r{display:flex;gap:5px;align-items:center;color:var(--text-sub)}
+.screen{flex:1;overflow:hidden;padding:0 14px}
+.tabbar{display:flex;border-top:1px solid var(--hairline);padding:9px 0 14px;background:var(--bg)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:9px;color:var(--text-tertiary)}
+.tab.on{color:var(--text);font-weight:600}
+.tab i{width:16px;height:16px;display:block;background:currentColor;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-position:center;mask-position:center}
+
+/* 앱의 진짜 로고. 손으로 그린 별을 쓰면 스토어와 앱의 얼굴이 갈린다. */
+.logo{background-image:url("data:image/png;base64,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");background-size:contain;
+  background-repeat:no-repeat;background-position:center}
+.hdr{display:flex;align-items:center;gap:7px;padding:14px 4px 2px}
+.hdr .logo{width:24px;height:24px;flex:0 0 auto}
+.hdr h3{font-size:19px;font-weight:700;letter-spacing:-.035em}
+.subhdr{display:flex;justify-content:space-between;align-items:baseline;padding:12px 4px 14px}
+.subhdr .l{font-size:13px;font-weight:700}
+.subhdr .l span{color:var(--text-tertiary);font-weight:400;font-family:var(--mono);font-size:11px}
+.subhdr .r{font-family:var(--mono);font-size:10px;color:var(--text-tertiary)}
+
+.card{background:var(--bg);border:1px solid var(--border);border-radius:16px;
+  padding:13px 13px 12px;margin-bottom:9px}
+.card.hi{border-color:rgba(224,27,46,.28)}
+.crow{display:flex;align-items:center;gap:10px}
+.jersey{width:44px;height:44px;border-radius:13px;background:var(--surface-alt);
+  display:flex;align-items:center;justify-content:center;position:relative;flex:0 0 auto}
+.jersey b{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--text)}
+.jersey::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:3px;
+  border-radius:2px;background:var(--tc,#999)}
+.who{flex:1;min-width:0}
+.who .nm{font-size:15.5px;font-weight:700;letter-spacing:-.03em;display:flex;align-items:center;gap:6px}
+.who .tm{font-size:11.5px;color:var(--text-sub);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:0 0 auto}
+.badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;
+  padding:4px 8px;border-radius:7px;background:var(--surface-alt);color:var(--text-sub);white-space:nowrap}
+.badge.live{background:var(--live-tint);color:var(--live-on-tint);
+  border:1px solid rgba(224,27,46,.25);display:flex;align-items:center;gap:4px}
+.badge.live::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--live)}
+.badge.grn{background:var(--good-tint);color:var(--good)}
+.sub{font-family:var(--mono);font-size:10px;color:var(--text-tertiary)}
+
+.strip{display:flex;justify-content:space-between;align-items:center;gap:8px;
+  background:var(--surface-alt);border-radius:11px;padding:9px 12px;margin-top:9px}
+.strip .l{font-size:11.5px;color:var(--text-sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.strip .s{font-family:var(--mono);font-size:13px;font-weight:600;white-space:nowrap}
+.strip .s .me{color:var(--live)} .strip .s .dim{color:var(--text-tertiary)}
+.strip .s .w{color:var(--good);font-weight:700}
+
+.panel{background:var(--surface-alt);border-radius:11px;padding:10px 12px;margin-top:8px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+.panel .l{font-size:12.5px;color:var(--text)}
+.panel .r{font-size:11px;color:var(--text-sub);white-space:nowrap}
+
+.foot{display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--hairline);margin-top:11px;padding-top:9px}
+.foot .k{font-size:11px;color:var(--text-tertiary)}
+.foot .v{font-family:var(--mono);font-size:11.5px;color:var(--text)}
+
+.grid{display:flex;background:var(--surface-alt);border-radius:11px;padding:9px 4px;margin-top:9px}
+.grid div{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.grid b{font-family:var(--mono);font-size:15px;font-weight:600}
+.grid b.g{color:var(--good)}
+.grid span{font-size:9.5px;color:var(--text-sub)}
+
+.relay{display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px 0 2px;font-size:12.5px;font-weight:600;color:var(--text-sub)}
+
+/* 전광판 */
+.board{background:var(--board);border-radius:15px;padding:13px 14px;margin:10px 0 4px;color:var(--board-text)}
+.board .top{display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:13px;font-weight:600}
+.board .top .dim{color:var(--board-dim);font-weight:400}
+.board .top .me{color:var(--led-out)}
+.board .top .inn{font-size:10.5px;color:var(--board-dim)}
+.board hr{border:0;height:1px;background:var(--board-divider);margin:11px 0}
+.board .ttl{display:flex;justify-content:space-between;align-items:center}
+.board .ttl .t{font-size:12.5px;font-weight:700;color:var(--live)}
+.board .ttl .o{font-family:var(--mono);font-size:11px;color:var(--board-dim)}
+.board .ttl .o b{color:var(--board-text);font-weight:600}
+.count{display:flex;gap:14px;align-items:center;margin-top:11px;
+  font-family:var(--mono);font-size:10.5px;color:var(--board-dim)}
+.count u{text-decoration:none;display:flex;gap:5px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--led-unlit)}
+.dot.b{background:var(--led-ball)} .dot.s{background:var(--led-strike)} .dot.o{background:var(--led-out)}
+.board .runners{font-family:var(--mono);font-size:10.5px;color:var(--board-dim);margin-top:9px}
+
+/* 상세 */
+.phdr{display:flex;gap:12px;align-items:flex-start;padding:16px 4px 4px}
+.phdr .jersey{width:54px;height:54px;border-radius:16px}
+.phdr .jersey b{font-size:21px}
+.phdr .nm{font-size:22px;font-weight:700;letter-spacing:-.04em;display:flex;align-items:center;gap:7px}
+.lg{font-family:var(--mono);font-size:9px;font-weight:700;padding:3px 6px;border-radius:5px;
+  background:var(--surface-alt);color:var(--text-sub);letter-spacing:.04em}
+.phdr .meta{font-size:11px;color:var(--text-sub);margin-top:5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.sect{border-top:8px solid var(--surface-alt);margin:12px -14px 0;padding:14px 14px 0}
+.slab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.slab h4{font-size:12px;font-weight:700}
+.slab span{font-family:var(--mono);font-size:10px;color:var(--text-tertiary)}
+.gline{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--hairline)}
+.gline:last-child{border-bottom:0}
+.gline .d{font-family:var(--mono);font-size:10.5px;color:var(--text-tertiary);width:32px;flex:0 0 auto}
+.gline .op{font-size:11px;color:var(--text-sub);width:44px;flex:0 0 auto}
+.gline .ln{flex:1;text-align:right;font-size:11.5px;font-weight:600}
+.gline .dec{font-size:11px;font-weight:700;color:var(--good);margin-left:7px;width:12px}
+.mile{display:flex;align-items:center;gap:6px;padding-top:8px;font-size:11.5px;color:var(--text-sub)}
+.mile b{color:var(--good);font-weight:600;font-size:12.5px}
+.speed{display:flex;align-items:center;gap:6px;padding-top:9px;font-size:11.5px;color:var(--text-sub)}
+.speed .note{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--text-tertiary)}
+
+/* 미베스 */
+.mtitle{display:flex;align-items:center;gap:7px;padding:14px 4px 2px}
+.mtitle h3{font-size:19px;font-weight:700;letter-spacing:-.035em}
+.mtitle svg{width:21px;height:21px;color:var(--good)}
+.msub{font-size:11.5px;color:var(--text-sub);padding:5px 4px 0}
+.wk{font-size:12px;font-weight:700;color:var(--text-tertiary);padding:14px 4px 8px}
+.why{background:var(--surface-alt);border:1px solid var(--border);
+  border-radius:11px;padding:11px 12px;margin-top:9px;
+  font-size:12.5px;line-height:1.55;color:var(--text)}
+/* 오른쪽 위 나이 — 앱의 caption 자리다. 칩이 아니다. */
+.agev{font-size:11.5px;color:var(--text-tertiary)}
+
+/* 검색 */
+.searchbar{background:var(--surface-alt);border-radius:13px;padding:12px 14px;
+  display:flex;gap:9px;align-items:center;color:var(--text-tertiary);font-size:13px;margin-top:12px}
+.pick{font-size:12px;font-weight:700;padding:16px 2px 4px}
+.srow{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--hairline)}
+.srow .jersey{width:38px;height:38px;border-radius:11px}
+.srow .jersey b{font-size:14px}
+.srow .nm{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.srow .en{font-family:var(--mono);font-size:9.5px;color:var(--text-tertiary);margin-top:2px}
+.follow{font-size:11px;font-weight:700;color:#fff;background:var(--text);
+  padding:7px 12px;border-radius:9px;white-space:nowrap}
+.follow.on{background:var(--surface-alt);color:var(--text-sub)}
+
+/* 잠금화면 */
+.lock{flex:1;display:flex;flex-direction:column;justify-content:center;gap:11px;padding:0 12px;
+  background:linear-gradient(162deg,#16202B 0%,#22303F 48%,#0E141B 100%)}
+.locktime{text-align:center;color:#fff;margin-bottom:14px}
+.locktime .t{font-size:50px;font-weight:600;letter-spacing:-.04em;line-height:1}
+.locktime .d{font-size:12px;opacity:.72;margin-top:5px}
+.push{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.16);
+  border-radius:17px;padding:11px 12px;display:flex;gap:10px;color:#fff}
+.push .ic{width:31px;height:31px;border-radius:8px;background:#fff;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center}
+.push .ic .logo{width:26px;height:26px}
+.push .bd{flex:1;min-width:0}
+.push .t1{font-size:11.5px;font-weight:700;display:flex;justify-content:space-between;gap:8px}
+.push .t1 .ago{font-weight:400;opacity:.6;font-family:var(--mono);font-size:9.5px;white-space:nowrap}
+.push .t2{font-size:11px;opacity:.88;margin-top:3px;line-height:1.45}
+
+
+/* 랜딩에서의 폰 크기 */
+.slot .phone{transform:scale(1)}
+.herophone .slot{transform:scale(1.06);transform-origin:top center}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <i class="logo"></i>
+    <span class="nm">마이베이스볼스타</span>
+    <nav>
+      <a href="terms">이용약관</a>
+      <a href="privacy">개인정보 처리방침</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero rise">
+    <div class="eb">KBO · MLB</div>
+    <h1>팀이 아니라<br>선수를 따라간다</h1>
+    <p>LG 팬이어도 김도영은 궁금하니까. 세 명만 고르면 타석마다 알려드립니다.</p>
+    <span class="soon"><i class="dot"></i>App Store 준비 중</span>
+    <div class="herophone"><div class="slot"><div class="phone">
+        <div class="status"><span>21:40</span><span class="r">5G ▮▮▮</span></div>
+        <div class="screen">
+          <div class="hdr"><i class="logo"></i><h3>마이베이스볼스타</h3></div>
+          <div class="subhdr"><div class="l">내 선수 <span>3/3</span></div><div class="r">8월 26일 (수) · 21:40</div></div>
+
+          <div class="card hi" style="--tc:#EA0029">
+            <div class="crow">
+              <div class="jersey"><b>5</b></div>
+              <div class="who"><div class="nm">김도영</div><div class="tm">KIA · 3루수</div></div>
+              <div class="side"><span class="badge live">경기 중</span><span class="sub">9회초</span></div>
+            </div>
+            <div class="strip"><span class="l">vs 롯데</span>
+              <span class="s"><span class="dim">KIA</span> <span class="me">16</span> : 11 <span class="dim">롯데</span></span></div>
+            <div class="foot"><span class="k">오늘</span><span class="v">4타수 2안타 · 1홈런</span></div>
+          </div>
+
+          <div class="card" style="--tc:#C30452">
+            <div class="crow">
+              <div class="jersey"><b>23</b></div>
+              <div class="who"><div class="nm">오스틴</div><div class="tm">LG · 지명타자</div></div>
+              <div class="side"><span class="badge">종료</span></div>
+            </div>
+            <div class="strip"><span class="l">NC 전 종료</span>
+              <span class="s"><span class="dim">LG</span> 8 : 0 <span class="w">승</span></span></div>
+            <div class="grid">
+              <div><b>4</b><span>타수</span></div><div><b class="g">2</b><span>안타</span></div>
+              <div><b class="g">2</b><span>홈런</span></div><div><b>4</b><span>타점</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="--tc:#005A9C">
+            <div class="crow">
+              <div class="jersey"><b>17</b></div>
+              <div class="who"><div class="nm">오타니 쇼헤이</div><div class="tm">로스앤젤레스 다저스 · 투타겸업</div></div>
+              <div class="side"><span class="badge">종료</span></div>
+            </div>
+            <div class="strip"><span class="l">애틀랜타 전 종료</span><span class="s">5타수 1안타</span></div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="tab on"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>')"></i>홈</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>')"></i>선수 검색</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>')"></i>미래베이스볼스타</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>')"></i>설정</div>
+        </div>
+      </div></div></div>
+  </section>
+</div>
+
+<div class="band alt">
+  <div class="wrap">
+    <div class="duo">
+      <div class="say">
+        <div class="eb">실시간 타석</div>
+        <h2>타석에 서면<br>전광판이 켜진다</h2>
+        <p>내 선수가 타석에 들어서면 화면이 바뀝니다. 중계를 안 보고 있어도 지금 무슨 상황인지 압니다.</p>
+        <ul>
+          <li>볼카운트와 아웃</li>
+          <li>주자가 어느 루에 있는지</li>
+          <li>상대 투수와 투구수</li>
+        </ul>
+      </div>
+      <div class="pic"><div class="crop"><div class="slot"><div class="phone">
+        <div class="status"><span>21:41</span><span class="r">5G ▮▮▮</span></div>
+        <div class="screen">
+          <div class="phdr">
+            <div class="jersey" style="--tc:#EA0029"><b>5</b></div>
+            <div>
+              <div class="nm">김도영 <span class="lg">KBO</span></div>
+              <div class="meta">KIA · 3루수 · No.5 · 2003년생</div>
+            </div>
+          </div>
+          <div class="board">
+            <div class="top"><span><span class="dim">KIA</span> <span class="me">16</span> : 11 <span class="dim">롯데</span></span><span class="inn">9회초</span></div>
+            <hr>
+            <div class="ttl"><span class="t">지금 타석</span><span class="o">상대&nbsp; <b>김원중</b> · 12구 ›</span></div>
+            <div class="count">
+              <u>B <i class="dot b"></i><i class="dot b"></i><i class="dot"></i></u>
+              <u>S <i class="dot s"></i><i class="dot"></i></u>
+              <u>O <i class="dot o"></i><i class="dot"></i></u>
+            </div>
+            <div class="runners">주자 1·3루</div>
+          </div>
+          <div class="relay">↗ 네이버 중계 보기</div>
+
+          <div class="sect">
+            <div class="slab"><h4>오늘 기록</h4></div>
+            <div class="grid" style="margin-top:0">
+              <div><b>4</b><span>타수</span></div><div><b class="g">2</b><span>안타</span></div>
+              <div><b class="g">1</b><span>홈런</span></div><div><b>4</b><span>타점</span></div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="slab"><h4>시즌 기록</h4><span>2026</span></div>
+            <div class="grid" style="margin-top:0">
+              <div><b>.305</b><span>타율</span></div><div><b class="g">129</b><span>안타</span></div>
+              <div><b class="g">39</b><span>홈런</span></div><div><b>98</b><span>타점</span></div>
+            </div>
+            <div class="mile">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6E7683" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></svg>
+              40홈런까지 <b>1개</b>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="slab"><h4>최근 경기</h4><span>3경기</span></div>
+            <div class="gline"><span class="d">8/25</span><span class="op">롯데</span><span class="ln">4타수 2안타</span></div>
+            <div class="gline"><span class="d">8/23</span><span class="op">키움</span><span class="ln">4타수 1안타 · 1홈런</span></div>
+            <div class="gline"><span class="d">8/22</span><span class="op">키움</span><span class="ln">3타수 무안타</span></div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="tab on"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>')"></i>홈</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>')"></i>선수 검색</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>')"></i>미래베이스볼스타</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>')"></i>설정</div>
+        </div>
+      </div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <div class="duo flip">
+      <div class="say">
+        <div class="eb">푸시 알림</div>
+        <h2>놓칠 뻔한 순간을<br>먼저 알려준다</h2>
+        <p>다음 타석이 가까워질 때, 안타를 칠 때, 기록을 세울 때. 필요한 종류만 켜 두면 나머지는 오지 않습니다.</p>
+      </div>
+      <div class="pic"><div class="crop"><div class="slot"><div class="phone dark">
+        <div class="status" style="color:#fff"><span>21:38</span><span class="r" style="color:rgba(255,255,255,.7)">5G ▮▮▮</span></div>
+        <div class="lock">
+          <div class="locktime"><div class="t">21:38</div><div class="d">8월 26일 수요일</div></div>
+
+          <div class="push">
+            <div class="ic"><i class="logo"></i></div>
+            <div class="bd">
+              <div class="t1"><span>👀 KIA 김도영 다음 타석</span><span class="ago">지금</span></div>
+              <div class="t2">9회초 · KIA 16 - 11 롯데 · 주자 1·3루<br>현재 2번 박찬호 타석 (1아웃)</div>
+            </div>
+          </div>
+
+          <div class="push">
+            <div class="ic"><i class="logo"></i></div>
+            <div class="bd">
+              <div class="t1"><span>⚾ LG 오스틴 홈런 🎉</span><span class="ago">42분 전</span></div>
+              <div class="t2">6회말 · LG 8 - 0 NC · 시즌 35호</div>
+            </div>
+          </div>
+
+          <div class="push">
+            <div class="ic"><i class="logo"></i></div>
+            <div class="bd">
+              <div class="t1"><span>🎉 LG 임찬규 승리투수</span><span class="ago">1시간 전</span></div>
+              <div class="t2">6이닝 · 0자책 · 4삼진 · 105구</div>
+            </div>
+          </div>
+        </div>
+      </div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="band alt">
+  <div class="wrap">
+    <div class="duo">
+      <div class="say">
+        <div class="eb">MLB</div>
+        <h2>오타니 한 명으로<br>시작해도 됩니다</h2>
+        <p>다저스 팬이 아니어도 오타니는 보고 싶고, 이정후가 나오는 날만 챙기고 싶기도 합니다.</p>
+        <ul>
+          <li>MLB 선수도 KBO 선수와 나란히 팔로우</li>
+          <li>자는 동안은 방해 금지 시간이 막아 줍니다</li>
+        </ul>
+      </div>
+      <div class="pic"><div class="crop"><div class="slot"><div class="phone">
+        <div class="status"><span>11:20</span><span class="r">5G ▮▮▮</span></div>
+        <div class="screen">
+          <div class="hdr"><i class="logo"></i><h3>마이베이스볼스타</h3></div>
+          <div class="subhdr"><div class="l">내 선수 <span>3/3</span></div><div class="r">8월 26일 (수) · 11:20</div></div>
+
+          <div class="card" style="--tc:#005A9C">
+            <div class="crow">
+              <div class="jersey"><b>17</b></div>
+              <div class="who"><div class="nm">오타니 쇼헤이</div><div class="tm">로스앤젤레스 다저스 · 투타겸업</div></div>
+              <div class="side"><span class="badge">종료</span></div>
+            </div>
+            <div class="strip"><span class="l">애틀랜타 전 종료</span><span class="s">5타수 1안타</span></div>
+          </div>
+
+          <div class="card" style="--tc:#FD5A1E">
+            <div class="crow">
+              <div class="jersey"><b>51</b></div>
+              <div class="who"><div class="nm">이정후</div><div class="tm">샌프란시스코 자이언츠 · 우익수</div></div>
+              <div class="side"><span class="badge">종료</span></div>
+            </div>
+            <div class="strip"><span class="l">신시내티 전 종료</span><span class="s">3타수 1안타</span></div>
+            <div class="grid">
+              <div><b>3</b><span>타수</span></div><div><b class="g">1</b><span>안타</span></div>
+              <div><b>0</b><span>타점</span></div><div><b class="g">1</b><span>도루</span></div>
+            </div>
+          </div>
+
+          <div class="card hi" style="--tc:#EA0029">
+            <div class="crow">
+              <div class="jersey"><b>5</b></div>
+              <div class="who"><div class="nm">김도영</div><div class="tm">KIA · 3루수</div></div>
+              <div class="side"><span class="badge">경기 전</span><span class="sub">7시간 뒤</span></div>
+            </div>
+            <div class="strip"><span class="l">광주 · vs 롯데</span><span class="s">18:30</span></div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="tab on"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>')"></i>홈</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>')"></i>선수 검색</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>')"></i>미래베이스볼스타</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>')"></i>설정</div>
+        </div>
+      </div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <div class="duo flip">
+      <div class="say">
+        <div class="eb" style="color:var(--good)">미래베이스볼스타</div>
+        <h2>다음 시즌의 이름을<br>미리 본다</h2>
+        <p>매주 월요일, 지난주 퓨처스리그에서 눈에 띈 어린 선수를 소개합니다. 1군에 올라오기 전의 이름입니다.</p>
+      </div>
+      <div class="pic"><div class="crop"><div class="slot"><div class="phone">
+        <div class="status"><span>16:06</span><span class="r">5G ▮▮▮</span></div>
+        <div class="screen">
+          <div class="mtitle">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z"/></svg>
+            <h3>미래베이스볼스타</h3>
+          </div>
+          <div class="msub">지난주 눈에 띈 퓨처스리그 선수</div>
+          <div class="wk">8월 17일 ~ 23일</div>
+
+          <div class="card" style="--tc:#CE0E2D">
+            <div class="crow">
+              <div class="jersey"><b>90</b></div>
+              <div class="who"><div class="nm">이준기</div><div class="tm">SSG · 투수</div></div>
+              <div class="side"><span class="agev">24세</span></div>
+            </div>
+            <div class="why">퓨처스리그 15경기에서 2승 5패 평균자책점 2.75를 기록했다. 가을야구가 멀어진 SSG 가 남은 시즌 새 얼굴을 찾는 과정에서 불펜 후보로 거론된 투수다.</div>
+          </div>
+
+          <div class="card" style="--tc:#C30452">
+            <div class="crow">
+              <div class="jersey"><b>26</b></div>
+              <div class="who"><div class="nm">이민호</div><div class="tm">LG · 투수</div></div>
+              <div class="side"><span class="agev">25세</span></div>
+            </div>
+            <div class="why">LG 1차 지명 투수로, 16일 이천에서 열린 퓨처스리그 KIA 전에 등판해 무피안타 무사사구를 기록하고도 2실점을 내주며 이례적인 결과를 남겼다.</div>
+          </div>
+        </div>
+        <div class="tabbar">
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z%22/></svg>')"></i>홈</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M10 2a8 8 0 105.3 14l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>')"></i>선수 검색</div>
+          <div class="tab on"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M20 4C10 4 4 9 4 17v3h2v-3c0-3.2 1.1-5.4 3.2-7.3 2.2 4.1 6.4 5.2 9.3 3 3-2.2 4.2-6.4 3.5-8.7z%22/></svg>')"></i>미래베이스볼스타</div>
+          <div class="tab"><i style="-webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path d=%22M4 6h9v2H4zm13 0h3v2h-3zM4 11h4v2H4zm8 0h8v2h-8zM4 16h11v2H4zm15 0h1v2h-1z%22/></svg>')"></i>설정</div>
+        </div>
+      </div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="band alt">
+  <div class="wrap">
+    <div class="say" style="max-width:44ch">
+      <div class="eb">우리가 지키는 것</div>
+      <h2>모르는 것은<br>모른다고 말합니다</h2>
+      <p>경기 정보는 늦기도 하고 빠지기도 합니다. 그때 그럴듯한 말로 칸을 채우지 않습니다.</p>
+    </div>
+    <dl class="honest">
+      <div>
+        <dt>경기가 취소되면</dt>
+        <dd><b>경기 취소</b>라고 씁니다. 이유를 모르면서 [우천취소]라고 하지 않습니다.</dd>
+      </div>
+      <div>
+        <dt>투수가 내려가면</dt>
+        <dd><b>등판 종료</b>로 바뀝니다. 마운드에 없는 사람을 [경기 중]이라고 두지 않습니다.</dd>
+      </div>
+      <div>
+        <dt>라인업이 안 나오면</dt>
+        <dd>몇 번 타자인지 <b>말하지 않습니다</b>. 나올 거라고 약속하지도 않습니다.</dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="end">
+    <i class="logo" style="width:44px;height:44px"></i>
+    <h2>좋아하는 선수가<br>한 명은 있잖아요</h2>
+    <p style="color:var(--ink-2);max-width:32ch">회원 가입이 없습니다. 앱을 열면 바로 선수를 고를 수 있습니다.</p>
+    <span class="soon"><i class="dot"></i>App Store 준비 중</span>
+  </section>
+
+  <footer>
+    <div class="co">
+      주식회사 톰즈워커즈 · <a href="mailto:tom@tomsworkers.io">tom@tomsworkers.io</a>
+    </div>
+    <nav>
+      <a href="https://www.instagram.com/mybaseballstar/">인스타그램</a>
+      <a href="terms">이용약관</a>
+      <a href="privacy">개인정보 처리방침</a>
+    </nav>
+  </footer>
+</div>
