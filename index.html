@@ -97,16 +97,6 @@ body{background:var(--page);color:var(--ink);font-family:var(--sans);
 /* 폰 아래를 조금만 잘라 [화면이 이어진다]는 인상을 준다 */
 .crop{height:470px;overflow:hidden}
 
-/* ── 말하지 않는 것 ───────────────────────────────── */
-.honest{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);
-  border:1px solid var(--rule);border-radius:16px;overflow:hidden;margin-top:30px}
-@media(min-width:760px){.honest{grid-template-columns:repeat(3,1fr)}}
-.honest div{background:var(--page);padding:22px 20px}
-.honest dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
-  color:var(--ink-3);margin-bottom:9px}
-.honest dd{font-size:14.5px;color:var(--ink-2)}
-.honest dd b{color:var(--ink);font-weight:600}
-
 /* ── 맺음 ─────────────────────────────────────────── */
 .end{text-align:center;padding:86px 0 70px;display:flex;flex-direction:column;
   align-items:center;gap:16px}
@@ -588,30 +578,6 @@ footer a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border
         </div>
       </div></div></div></div>
     </div>
-  </div>
-</div>
-
-<div class="band alt">
-  <div class="wrap">
-    <div class="say" style="max-width:44ch">
-      <div class="eb">우리가 지키는 것</div>
-      <h2>모르는 것은<br>모른다고 말합니다</h2>
-      <p>경기 정보는 늦기도 하고 빠지기도 합니다. 그때 그럴듯한 말로 칸을 채우지 않습니다.</p>
-    </div>
-    <dl class="honest">
-      <div>
-        <dt>경기가 취소되면</dt>
-        <dd><b>경기 취소</b>라고 씁니다. 이유를 모르면서 [우천취소]라고 하지 않습니다.</dd>
-      </div>
-      <div>
-        <dt>투수가 내려가면</dt>
-        <dd><b>등판 종료</b>로 바뀝니다. 마운드에 없는 사람을 [경기 중]이라고 두지 않습니다.</dd>
-      </div>
-      <div>
-        <dt>라인업이 안 나오면</dt>
-        <dd>몇 번 타자인지 <b>말하지 않습니다</b>. 나올 거라고 약속하지도 않습니다.</dd>
-      </div>
-    </dl>
   </div>
 </div>
 
